@@ -20,19 +20,17 @@ async function getStatsData(days: number) {
   const since = new Date(anchor);
   since.setDate(anchor.getDate() - days);
   since.setHours(0, 0, 0, 0);
-
-  const sinceMs = since.getTime();
   const rows = await prisma.$queryRaw<RawRow[]>(Prisma.sql`
     SELECT
-      sourceKey,
-      DATE(publishedAt / 1000, 'unixepoch') AS date,
-      AVG(sensationScore)  AS avgSensation,
-      AVG(politicalLean)   AS avgLean,
-      COUNT(*)             AS articleCount
-    FROM SourceArticle
-    WHERE publishedAt >= ${sinceMs}
-    GROUP BY sourceKey, DATE(publishedAt / 1000, 'unixepoch')
-    ORDER BY sourceKey, date
+      "sourceKey",
+      TO_CHAR("publishedAt", 'YYYY-MM-DD') AS date,
+      AVG("sensationScore")  AS "avgSensation",
+      AVG("politicalLean")   AS "avgLean",
+      COUNT(*)               AS "articleCount"
+    FROM "SourceArticle"
+    WHERE "publishedAt" >= ${since}
+    GROUP BY "sourceKey", TO_CHAR("publishedAt", 'YYYY-MM-DD')
+    ORDER BY "sourceKey", date
   `);
 
   const grouped: Record<string, RawRow[]> = {};
