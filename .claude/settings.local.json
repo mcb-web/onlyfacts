@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3000/api/articles)",
+      "Bash(sqlite3:*)",
+      "Bash(ls -la *.db)",
+      "Bash(ls -la prisma/*.db)",
+      "Bash(curl -s \"http://localhost:3000/api/stats\")",
+      "Bash(python3 -c \":*)"
+    ]
+  }
+}

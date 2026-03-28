@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model NewsEvent {
+  id               String          @id @default(cuid())
+  slug             String          @unique
+  title            String
+  summary          String
+  objectiveReport  String
+  intriguingFacts  String          // JSON array of {fact, source}
+  politicalContext String?         // JSON {parties: [{name, position, context, votes}]}
+  webFacts         String          @default("[]") // JSON array of {claim, source, url}
+  category         String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  sourceArticles   SourceArticle[]
+}
+
+model SourceArticle {
+  id             String    @id @default(cuid())
+  eventId        String
+  event          NewsEvent @relation(fields: [eventId], references: [id])
+  sourceKey      String
+  sourceName     String
+  originalTitle  String
+  url            String
+  publishedAt    DateTime
+  sensationScore Float
+  politicalLean  Float
+  perspective    String
+  keyPhrases     String    // JSON array of notable phrases
+  createdAt      DateTime  @default(now())
+}
+
+model DailySourceStat {
+  id           String   @id @default(cuid())
+  sourceKey    String
+  date         DateTime
+  avgSensation Float
+  politicalLean Float
+  articleCount Int
+
+  @@unique([sourceKey, date])
+}

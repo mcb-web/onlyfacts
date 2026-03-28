@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-lora: 'Lora', Georgia, serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-canvas text-ink antialiased;
+    font-family: var(--font-inter);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-lora);
+    @apply font-medium;
+  }
+}
+
+@layer components {
+  .article-prose {
+    font-family: var(--font-lora);
+    @apply text-[1.05rem] leading-[1.85] text-ink;
+  }
+  .article-prose p {
+    @apply mb-5;
+  }
+
+  .bias-gradient {
+    background: linear-gradient(
+      to right,
+      #1E40AF 0%,
+      #3B82F6 20%,
+      #9CA3AF 50%,
+      #F87171 80%,
+      #9F1239 100%
+    );
+  }
+
+  .category-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-card border border-border;
+  }
+
+  .card-hover {
+    @apply card transition-shadow duration-200 hover:shadow-card-hover;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
