@@ -5,12 +5,14 @@ import { MOCK_NEWS_EVENTS, generateMockDailyStats } from "@/lib/mock-data";
 export async function GET() {
   try {
     const existing = await prisma.newsEvent.count();
-    if (existing > 0) {
+    const existingStats = await prisma.dailySourceStat.count();
+
+    if (existing > 0 && existingStats > 0) {
       return NextResponse.json({ status: "already_seeded", count: existing });
     }
 
     // Seed news events and source articles
-    for (const event of MOCK_NEWS_EVENTS) {
+    if (existing === 0) for (const event of MOCK_NEWS_EVENTS) {
       await prisma.newsEvent.create({
         data: {
           slug: event.slug,
