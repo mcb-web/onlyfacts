@@ -35,7 +35,8 @@ async function getEvent(id: string): Promise<NewsEventData | null> {
         keyPhrases: JSON.parse(a.keyPhrases),
       })),
     };
-  } catch {
+  } catch (err) {
+    console.error("[getEvent] error:", err);
     return null;
   }
 }
@@ -164,6 +165,8 @@ export default async function ArticlePage({
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";
 
 export async function generateStaticParams() {
   return [];

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { prisma } from "@/lib/db";
 import ArticleCard from "@/components/ArticleCard";
 import FetchButton from "@/components/FetchButton";
