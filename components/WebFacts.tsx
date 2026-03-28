@@ -31,26 +31,29 @@ export default function WebFacts({ facts }: WebFactsProps) {
             </p>
 
             {/* De Correspondent-style collapsed citation */}
-            <details className="group mt-1">
-              <summary className="inline-flex items-center gap-1 text-[0.65rem] text-ink-muted cursor-pointer list-none hover:text-accent transition-colors select-none">
-                <span className="font-semibold text-accent">[{i + 1}]</span>
-                <span className="group-open:hidden">Toon bron</span>
-                <span className="hidden group-open:inline">Verberg bron</span>
-              </summary>
-              <div className="mt-1.5 pl-3 border-l-2 border-accent/30">
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[0.7rem] text-accent hover:underline break-words leading-relaxed"
-                >
-                  {item.source}
-                </a>
-                <p className="text-[0.65rem] text-ink-muted mt-0.5 break-all">
-                  {item.url}
-                </p>
-              </div>
-            </details>
+            {item.source && (
+              <details className="group mt-1">
+                <summary className="inline-flex items-center gap-1 text-[0.65rem] text-ink-muted cursor-pointer list-none hover:text-accent transition-colors select-none">
+                  <span className="font-semibold text-accent">[{i + 1}]</span>
+                  <span className="group-open:hidden">Toon bron</span>
+                  <span className="hidden group-open:inline">Verberg bron</span>
+                </summary>
+                <div className="mt-1.5 pl-3 border-l-2 border-accent/30">
+                  {item.url ? (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[0.7rem] text-accent hover:underline break-words leading-relaxed"
+                    >
+                      {item.source}
+                    </a>
+                  ) : (
+                    <span className="text-[0.7rem] text-ink-secondary">{item.source}</span>
+                  )}
+                </div>
+              </details>
+            )}
           </li>
         ))}
       </ol>
