@@ -3,8 +3,17 @@ import { prisma } from "@/lib/db";
 import { MOCK_NEWS_EVENTS, generateMockDailyStats } from "@/lib/mock-data";
 
 export async function GET(req: Request) {
-  const force = new URL(req.url).searchParams.get("force") === "1";
+  const params = new URL(req.url).searchParams;
+  const force = params.get("force") === "1";
+  const wipe = params.get("wipe") === "1";
   try {
+    if (wipe) {
+      await prisma.dailySourceStat.deleteMany();
+      await prisma.sourceArticle.deleteMany();
+      await prisma.newsEvent.deleteMany();
+      return NextResponse.json({ status: "wiped" });
+    }
+
     const existing = await prisma.newsEvent.count();
     const existingStats = await prisma.dailySourceStat.count();
 
