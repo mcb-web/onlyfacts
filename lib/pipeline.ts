@@ -48,7 +48,7 @@ async function fetchWebFacts(
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = await (ai as any).responses.create({
-      model: "gpt-4o-mini-search-preview",
+      model: "gpt-4o-mini",
       tools: [{ type: "web_search_preview" }],
       input: `Zoek 3 tot 5 aanvullende, verifieerbare feiten die de volgende Nederlandse nieuwsgebeurtenis verrijken met bredere context, historische achtergrond of relevante statistieken. Feiten die de meeste Nederlandse nieuwslezers nog niet kennen. Schrijf elk feit als één beknopte zin in het Nederlands, met een directe bronvermelding.
 
