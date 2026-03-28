@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { MOCK_NEWS_EVENTS, generateMockDailyStats } from "@/lib/mock-data";
