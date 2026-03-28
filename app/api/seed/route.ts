@@ -2,17 +2,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { MOCK_NEWS_EVENTS, generateMockDailyStats } from "@/lib/mock-data";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const force = new URL(req.url).searchParams.get("force") === "1";
   try {
     const existing = await prisma.newsEvent.count();
     const existingStats = await prisma.dailySourceStat.count();
 
-    if (existing > 0 && existingStats > 0) {
+    if (existing > 0 && existingStats > 0 && !force) {
       return NextResponse.json({ status: "already_seeded", count: existing });
     }
 
+    if (force) {
+      await prisma.dailySourceStat.deleteMany();
+      await prisma.sourceArticle.deleteMany();
+      await prisma.newsEvent.deleteMany();
+    }
+
     // Seed news events and source articles
-    if (existing === 0) for (const event of MOCK_NEWS_EVENTS) {
+    const shouldSeedEvents = existing === 0 || force;
+    if (shouldSeedEvents) for (const event of MOCK_NEWS_EVENTS) {
       await prisma.newsEvent.create({
         data: {
           slug: event.slug,
