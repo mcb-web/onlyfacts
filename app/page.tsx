@@ -26,7 +26,8 @@ async function getEvents(): Promise<NewsEventData[]> {
         keyPhrases: JSON.parse(a.keyPhrases),
       })),
     }));
-  } catch {
+  } catch (err) {
+    console.error("[homepage] getEvents error:", err);
     return [];
   }
 }
