@@ -123,7 +123,7 @@ async function fetchWebFactsFallback(
 ): Promise<WebFact[]> {
   try {
     const response = await ai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-5-search-api-2025-10-14",
       max_tokens: 600,
       messages: [
         {
@@ -203,7 +203,7 @@ Regels:
   let synthesis: SynthesisResult;
   try {
     const r1 = await ai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-5-search-api-2025-10-14",
       max_tokens: 1500,
       response_format: { type: "json_object" },
       messages: [
@@ -244,7 +244,7 @@ Regels:
 
         try {
           const r2 = await ai.chat.completions.create({
-            model: "gpt-4o-mini",
+            model: "gpt-5-search-api-2025-10-14",
             max_tokens: 400,
             response_format: { type: "json_object" },
             messages: [
