@@ -129,7 +129,7 @@ async function fetchWebFactsFallback(
         {
           role: "system",
           content:
-            "Je bent een Nederlandse nieuwsanalist. Geef 3 tot 5 aanvullende, verifieerbare feiten die de nieuwsgebeurtenis verrijken met bredere context, historische achtergrond of relevante statistieken. Respond met JSON array: [{\"claim\": \"...\", \"source\": \"...\"}]. Geen URL nodig.",
+            "Je bent een Nederlandse nieuwsanalist. Geef 3 tot 5 aanvullende, verifieerbare feiten die de nieuwsgebeurtenis verrijken. Stuur altijd dit exacte JSON formaat terug: {\"facts\": [{\"claim\": \"feit als zin\", \"source\": \"bronvermelding\"}]}",
         },
         {
           role: "user",
