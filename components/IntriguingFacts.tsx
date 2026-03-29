@@ -1,4 +1,4 @@
-import { Lightbulb, ExternalLink } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import type { IntriguingFact } from "@/lib/types";
 
 interface IntriguingFactsProps {
@@ -22,20 +22,7 @@ export default function IntriguingFacts({ facts }: IntriguingFactsProps) {
             </div>
             <div>
               <p className="text-sm text-ink leading-relaxed">{item.fact}</p>
-              <div className="flex items-center gap-1 mt-1">
-                <p className="text-[0.65rem] text-ink-muted">Bron: {item.source}</p>
-                {item.sourceUrl && (
-                  <a
-                    href={item.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-ink-muted hover:text-accent transition-colors"
-                    title="Bekijk bron"
-                  >
-                    <ExternalLink size={10} />
-                  </a>
-                )}
-              </div>
+              <p className="text-[0.65rem] text-ink-muted mt-1">Bron: {item.source}</p>
             </div>
           </li>
         ))}

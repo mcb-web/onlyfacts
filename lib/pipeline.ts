@@ -180,7 +180,7 @@ Genereer een JSON-object met:
   "objectiveReport": "Volledig objectief nieuwsverslag in 3-4 alinea's (max 350 woorden). Alleen verifieerbare feiten, namen, datums, bedragen. Geen bijvoeglijke naamwoorden met emotionele lading. Schrijf in het Nederlands.",
   "category": "één van: politiek, economie, klimaat, technologie, buitenland, maatschappij, sport",
   "intriguingFacts": [
-    {"fact": "Opvallend of weinig bekend contextfeit", "source": "Bronvermelding (bijv. CBS, 2025)", "sourceUrl": "https://www.cbs.nl of andere directe URL, of null als onbekend"}
+    {"fact": "Opvallend of weinig bekend contextfeit", "source": "Bronvermelding (bijv. CBS, 2025)"}
   ],
   "politicalContext": {
     "parties": [
