@@ -112,43 +112,6 @@ Samenvatting: ${summary}`,
     return facts.slice(0, 5);
   } catch (err) {
     console.error("[pipeline] Web facts fetch failed:", err);
-    return fetchWebFactsFallback(ai, title, summary);
-  }
-}
-
-async function fetchWebFactsFallback(
-  ai: OpenAI,
-  title: string,
-  summary: string
-): Promise<WebFact[]> {
-  try {
-    const response = await ai.chat.completions.create({
-      model: "gpt-4o-mini",
-      max_tokens: 600,
-      messages: [
-        {
-          role: "system",
-          content:
-            "Je bent een Nederlandse nieuwsanalist. Geef 3 tot 5 aanvullende, verifieerbare feiten die de nieuwsgebeurtenis verrijken. Stuur altijd dit exacte JSON formaat terug: {\"facts\": [{\"claim\": \"feit als zin\", \"source\": \"bronvermelding\"}]}",
-        },
-        {
-          role: "user",
-          content: `Onderwerp: "${title}"\nSamenvatting: ${summary}`,
-        },
-      ],
-      response_format: { type: "json_object" },
-    });
-
-    const content = response.choices[0]?.message?.content ?? "{}";
-    const parsed = JSON.parse(content);
-    const items: Array<{ claim: string; source: string }> = parsed.facts ?? parsed.items ?? [];
-    return items.slice(0, 5).map((item) => ({
-      claim: item.claim,
-      source: item.source,
-      url: "",
-    }));
-  } catch (err) {
-    console.error("[pipeline] Web facts fallback failed:", err);
     return [];
   }
 }
