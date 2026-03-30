@@ -123,6 +123,36 @@ export const SOURCES: Record<string, SourceMeta> = {
     color: "#8E44AD",
     description: "Links progressief opinieplatform, BNNVARA",
   },
+  bbc: {
+    key: "bbc",
+    name: "BBC News",
+    shortName: "BBC",
+    domain: "bbc.co.uk",
+    politicalLean: -0.5,
+    baseSensation: 2.2,
+    color: "#BB1919",
+    description: "Britse publieke omroep, internationaal bereik",
+  },
+  cnn: {
+    key: "cnn",
+    name: "CNN",
+    shortName: "CNN",
+    domain: "cnn.com",
+    politicalLean: -1.5,
+    baseSensation: 5.8,
+    color: "#CC0000",
+    description: "Amerikaans nieuwsnetwerk, links-van-centrum",
+  },
+  aljazeera: {
+    key: "aljazeera",
+    name: "Al Jazeera",
+    shortName: "Al Jazeera",
+    domain: "aljazeera.com",
+    politicalLean: -0.8,
+    baseSensation: 3.5,
+    color: "#4B7F52",
+    description: "Qatarees internationaal nieuwsnetwerk, Arabisch perspectief",
+  },
 };
 
 export function getSource(key: string): SourceMeta {

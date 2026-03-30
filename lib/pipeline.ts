@@ -198,7 +198,7 @@ Genereer een JSON-object met:
 Regels:
 - intriguingFacts: 2-4 items, verrassende feiten of context die de meeste lezers niet kennen
 - politicalContext: alleen opnemen als het onderwerp politiek relevant is, anders null
-- Schrijf alles in het Nederlands`;
+- De bronartikelen kunnen in het Engels of Nederlands zijn — schrijf alle output altijd in het Nederlands`;
 
   let synthesis: SynthesisResult;
   try {

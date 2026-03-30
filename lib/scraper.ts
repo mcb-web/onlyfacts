@@ -29,6 +29,9 @@ const RSS_FEEDS: Array<{ sourceKey: string; url: string }> = [
   { sourceKey: "nu", url: "https://www.nu.nl/rss/algemeen" },
   { sourceKey: "eenvandaag", url: "https://eenvandaag.avrotros.nl/feed/" },
   { sourceKey: "joop", url: "https://www.bnnvara.nl/api/rss/joop" },
+  { sourceKey: "bbc", url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+  { sourceKey: "cnn", url: "http://rss.cnn.com/rss/cnn_world.rss" },
+  { sourceKey: "aljazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
 ];
 
 const SOURCE_NAMES: Record<string, string> = {
@@ -43,6 +46,9 @@ const SOURCE_NAMES: Record<string, string> = {
   nu: "NU.nl",
   eenvandaag: "EenVandaag",
   joop: "Joop (BNNVARA)",
+  bbc: "BBC News",
+  cnn: "CNN",
+  aljazeera: "Al Jazeera",
 };
 
 const parser = new RSSParser({
