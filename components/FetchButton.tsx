@@ -12,7 +12,7 @@ export default function FetchButton() {
     setState("loading");
     setMessage("Nieuws ophalen…");
     try {
-      const res = await fetch("/api/fetch");
+      const res = await fetch("/api/fetch", { signal: AbortSignal.timeout(110_000) });
       const data = await res.json();
       if (!res.ok) {
         setState("error");

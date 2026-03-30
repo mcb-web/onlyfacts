@@ -52,12 +52,16 @@ export async function GET() {
       return NextResponse.json({ message: "No clusters found", log });
     }
 
-    // 4. Synthesize each cluster and store
+    // 4. Synthesize each cluster and store — cap at 4 per run to avoid timeout
+    const topClusters = clusters
+      .sort((a, b) => b.articles.length - a.articles.length)
+      .slice(0, 4);
+    log.push(`Processing ${topClusters.length} of ${clusters.length} clusters`);
+
     const results = { created: 0, skipped: 0, failed: 0 };
-    // Track titles created this run to deduplicate within the same batch
     const createdThisRun: string[] = [...existingTitles];
 
-    for (const cluster of clusters) {
+    for (const cluster of topClusters) {
       log.push(`Synthesizing: "${cluster.eventTitle}"…`);
 
       try {
