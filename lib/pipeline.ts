@@ -197,11 +197,10 @@ Regels:
     return null;
   }
 
-  // Step 2: Web facts + per-source analysis (parallel)
-  const [webFacts, sourceAnalyses] = await Promise.all([
-    fetchWebFacts(ai, synthesis.title, synthesis.summary),
-    Promise.all(
-      cluster.articles.map(async (article): Promise<SourceAnalysis> => {
+  // Step 2: Per-source analysis — cap at 3 articles to stay within time budget
+  const articlesToAnalyse = cluster.articles.slice(0, 3);
+  const sourceAnalyses = await Promise.all(
+    articlesToAnalyse.map(async (article): Promise<SourceAnalysis> => {
         const baseLean = SOURCES[article.sourceKey]?.politicalLean ?? 0;
         const baseSensation = SOURCES[article.sourceKey]?.baseSensation ?? 5;
 
@@ -264,10 +263,9 @@ Context: de bekende politieke positie van ${article.sourceName} ligt rond ${base
           };
         }
       })
-    ),
-  ]);
+  );
 
-  synthesis.webFacts = webFacts;
+  synthesis.webFacts = [];
   return { synthesis, sourceAnalyses };
 }
 

@@ -151,10 +151,10 @@ export async function clusterArticles(
 
   if (candidates.length === 0) return [];
 
-  // 4. Validate top candidates only — sort by source count desc, cap at 8
+  // 4. Validate top candidates only — sort by source count desc, cap at 5
   const topCandidates = candidates
     .sort((a, b) => b.length - a.length)
-    .slice(0, 8);
+    .slice(0, 5);
 
   const results: ArticleCluster[] = [];
 
