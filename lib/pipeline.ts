@@ -203,7 +203,7 @@ Regels:
   let synthesis: SynthesisResult;
   try {
     const r1 = await ai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       max_tokens: 1500,
       response_format: { type: "json_object" },
       messages: [

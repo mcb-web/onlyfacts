@@ -55,7 +55,7 @@ export async function GET() {
     // 4. Synthesize each cluster and store — cap at 4 per run to avoid timeout
     const topClusters = clusters
       .sort((a, b) => b.articles.length - a.articles.length)
-      .slice(0, 4);
+      .slice(0, 2);
     log.push(`Processing ${topClusters.length} of ${clusters.length} clusters`);
 
     const results = { created: 0, skipped: 0, failed: 0 };
