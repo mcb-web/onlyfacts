@@ -7,7 +7,7 @@ export interface ArticleCluster {
   articles: RawArticle[];
 }
 
-const SIMILARITY_THRESHOLD = 0.75;
+const SIMILARITY_THRESHOLD = 0.68;
 
 /** Ask GPT to confirm all articles in a cluster cover the same news event. */
 async function validateCluster(

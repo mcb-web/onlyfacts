@@ -72,7 +72,7 @@ async function fetchFeed(sourceKey: string, url: string): Promise<RawArticle[]> 
     const sourceName = SOURCE_NAMES[sourceKey] ?? sourceKey;
 
     return (feed.items ?? [])
-      .slice(0, 15) // max 15 per source
+      .slice(0, 25) // max 25 per feed
       .filter((item) => item.title && (item.contentSnippet || item.content || item.summary))
       .map((item) => ({
         sourceKey,

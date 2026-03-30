@@ -36,7 +36,7 @@ export async function GET() {
     }
 
     // 2. Load recent event titles so the cluster step can avoid re-grouping them
-    const recentCutoff = new Date(Date.now() - 48 * 3600 * 1000);
+    const recentCutoff = new Date(Date.now() - 24 * 3600 * 1000);
     const recentEvents = await prisma.newsEvent.findMany({
       where: { createdAt: { gte: recentCutoff } },
       select: { title: true },
