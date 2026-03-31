@@ -153,6 +153,36 @@ export const SOURCES: Record<string, SourceMeta> = {
     color: "#4B7F52",
     description: "Qatarees internationaal nieuwsnetwerk, Arabisch perspectief",
   },
+  reuters: {
+    key: "reuters",
+    name: "Reuters",
+    shortName: "Reuters",
+    domain: "reuters.com",
+    politicalLean: 0.0,
+    baseSensation: 1.5,
+    color: "#FF6600",
+    description: "Internationaal persbureau, feitelijk en neutraal",
+  },
+  guardian: {
+    key: "guardian",
+    name: "The Guardian",
+    shortName: "Guardian",
+    domain: "theguardian.com",
+    politicalLean: -2.0,
+    baseSensation: 3.2,
+    color: "#052962",
+    description: "Brits progressief-liberaal kwaliteitsdagblad",
+  },
+  ew: {
+    key: "ew",
+    name: "EW Magazine",
+    shortName: "EW",
+    domain: "ewmagazine.nl",
+    politicalLean: 1.8,
+    baseSensation: 3.4,
+    color: "#1A5276",
+    description: "Rechts-liberaal politiek weekblad",
+  },
 };
 
 export function getSource(key: string): SourceMeta {

@@ -32,6 +32,9 @@ const RSS_FEEDS: Array<{ sourceKey: string; url: string }> = [
   { sourceKey: "bbc", url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
   { sourceKey: "cnn", url: "http://rss.cnn.com/rss/cnn_world.rss" },
   { sourceKey: "aljazeera", url: "https://www.aljazeera.com/xml/rss/all.xml" },
+  { sourceKey: "reuters", url: "https://news.google.com/rss/search?q=site%3Areuters.com&hl=en-US&gl=US&ceid=US%3Aen" },
+  { sourceKey: "guardian", url: "https://www.theguardian.com/world/rss" },
+  { sourceKey: "ew", url: "https://news.google.com/rss/search?q=site:ewmagazine.nl&hl=nl&gl=NL&ceid=NL:nl" },
 ];
 
 const SOURCE_NAMES: Record<string, string> = {
@@ -49,6 +52,9 @@ const SOURCE_NAMES: Record<string, string> = {
   bbc: "BBC News",
   cnn: "CNN",
   aljazeera: "Al Jazeera",
+  reuters: "Reuters",
+  guardian: "The Guardian",
+  ew: "EW Magazine",
 };
 
 const parser = new RSSParser({
