@@ -183,6 +183,26 @@ export const SOURCES: Record<string, SourceMeta> = {
     color: "#1A5276",
     description: "Rechts-liberaal politiek weekblad",
   },
+  nltimes: {
+    key: "nltimes",
+    name: "NL Times",
+    shortName: "NL Times",
+    domain: "nltimes.nl",
+    politicalLean: 0.0,
+    baseSensation: 2.8,
+    color: "#2471A3",
+    description: "Engelstalig nieuws over Nederland",
+  },
+  dutchnews: {
+    key: "dutchnews",
+    name: "Dutch News",
+    shortName: "DutchNews",
+    domain: "dutchnews.nl",
+    politicalLean: 0.0,
+    baseSensation: 2.5,
+    color: "#1E8449",
+    description: "Engelstalig nieuws over Nederland",
+  },
 };
 
 export function getSource(key: string): SourceMeta {

@@ -35,6 +35,8 @@ const RSS_FEEDS: Array<{ sourceKey: string; url: string }> = [
   { sourceKey: "reuters", url: "https://news.google.com/rss/search?q=site%3Areuters.com&hl=en-US&gl=US&ceid=US%3Aen" },
   { sourceKey: "guardian", url: "https://www.theguardian.com/world/rss" },
   { sourceKey: "ew", url: "https://news.google.com/rss/search?q=site:ewmagazine.nl&hl=nl&gl=NL&ceid=NL:nl" },
+  { sourceKey: "nltimes", url: "https://nltimes.nl/rssfeed2" },
+  { sourceKey: "dutchnews", url: "https://www.dutchnews.nl/feed/" },
 ];
 
 const SOURCE_NAMES: Record<string, string> = {
@@ -55,6 +57,8 @@ const SOURCE_NAMES: Record<string, string> = {
   reuters: "Reuters",
   guardian: "The Guardian",
   ew: "EW Magazine",
+  nltimes: "NL Times",
+  dutchnews: "Dutch News",
 };
 
 const parser = new RSSParser({
