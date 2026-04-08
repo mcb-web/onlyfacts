@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import type { RawArticle } from "./scraper";
 import { embedTexts, connectedComponents } from "./embeddings";
+import { titleSimilarity } from "./utils";
 
 export interface ArticleCluster {
   eventTitle: string;
@@ -163,11 +164,9 @@ export async function clusterArticles(
     if (!eventTitle) continue;
 
     // Skip if the event title is too similar to an already-existing story
-    const alreadyExists = existingTitles.some((t) => {
-      const overlap = [...new Set(eventTitle.toLowerCase().split(/\s+/))]
-        .filter((w) => w.length > 3 && t.toLowerCase().includes(w));
-      return overlap.length >= 3;
-    });
+    const alreadyExists = existingTitles.some(
+      (t) => titleSimilarity(eventTitle, t) >= 0.4
+    );
     if (alreadyExists) continue;
 
     results.push({ eventTitle, articles: arts });
