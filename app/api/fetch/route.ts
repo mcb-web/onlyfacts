@@ -35,16 +35,22 @@ export async function GET() {
       return NextResponse.json({ error: "Too few articles fetched", log }, { status: 500 });
     }
 
-    // 2. Load all existing event titles so the cluster step can avoid re-creating known stories
+    // 2a. All existing event titles — prevent re-creating already-covered news events
+    const allEvents = await prisma.newsEvent.findMany({ select: { title: true } });
+    const allTitles = allEvents.map((e) => e.title);
+
+    // 2b. Recent titles (last 3 days) — prevent re-creating topic overviews too soon
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 3600 * 1000);
     const recentEvents = await prisma.newsEvent.findMany({
+      where: { createdAt: { gte: threeDaysAgo } },
       select: { title: true },
     });
-    const existingTitles = recentEvents.map((e) => e.title);
+    const recentTitles = recentEvents.map((e) => e.title);
 
-    // 3. Cluster by event (passing existing titles to avoid re-grouping known stories)
-    log.push("Clustering articles by event…");
-    const clusters = await clusterArticles(articles, existingTitles);
-    log.push(`Found ${clusters.length} multi-source events`);
+    // 3. Cluster by event or topic
+    log.push("Clustering articles…");
+    const clusters = await clusterArticles(articles, allTitles, recentTitles);
+    log.push(`Found ${clusters.length} clusters (events + topic overviews)`);
 
     if (clusters.length === 0) {
       return NextResponse.json({ message: "No clusters found", log });
@@ -57,7 +63,7 @@ export async function GET() {
     log.push(`Processing ${topClusters.length} of ${clusters.length} clusters`);
 
     const results = { created: 0, skipped: 0, failed: 0 };
-    const createdThisRun: string[] = [...existingTitles];
+    const createdThisRun: string[] = [...allTitles];
 
     for (const cluster of topClusters) {
       log.push(`Synthesizing: "${cluster.eventTitle}"…`);

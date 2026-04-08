@@ -6,6 +6,9 @@ import { titleSimilarity } from "./utils";
 export interface ArticleCluster {
   eventTitle: string;
   articles: RawArticle[];
+  /** "event" = all sources cover the exact same news fact.
+   *  "topic" = sources cover different aspects of the same prominent ongoing story. */
+  type: "event" | "topic";
 }
 
 const SIMILARITY_THRESHOLD = 0.75;
@@ -72,27 +75,38 @@ function nameBasedCandidates(articles: RawArticle[]): RawArticle[][] {
   return candidates;
 }
 
-/** Ask GPT to confirm all articles in a cluster cover the same news event. */
+interface ClusterValidation {
+  type: "event" | "topic";
+  title: string;
+}
+
+/**
+ * Ask GPT whether the cluster is a single event, a topic overview, or unrelated.
+ * Returns null if articles don't belong together.
+ */
 async function validateCluster(
   client: OpenAI,
   articles: RawArticle[]
-): Promise<string | null> {
+): Promise<ClusterValidation | null> {
   const list = articles
     .map((a) => `- [${a.sourceName}] "${a.title}"`)
     .join("\n");
 
   const response = await client.chat.completions.create({
     model: "gpt-4o-mini",
-    max_tokens: 60,
+    max_tokens: 80,
     messages: [
       {
         role: "system",
         content:
-          'Je bent een Nederlandse nieuwsredacteur. Beantwoord alleen met JSON: {"same": true/false, "title": "korte objectieve titel (max 12 woorden)"}.',
+          'Je bent een Nederlandse nieuwsredacteur. Beantwoord alleen met JSON: {"type": "event"|"topic"|"none", "title": "korte objectieve titel (max 12 woorden)"}.\n' +
+          '- "event": alle koppen gaan over EXACT hetzelfde nieuwsfeit\n' +
+          '- "topic": koppen gaan over hetzelfde prominente lopende onderwerp maar vanuit verschillende invalshoeken of sub-gebeurtenissen\n' +
+          '- "none": koppen horen inhoudelijk niet bij elkaar',
       },
       {
         role: "user",
-        content: `Gaan alle onderstaande koppen over exact hetzelfde nieuwsfeit?\n\n${list}`,
+        content: `Analyseer de onderstaande koppen:\n\n${list}`,
       },
     ],
   });
@@ -100,8 +114,8 @@ async function validateCluster(
   const raw = response.choices[0]?.message?.content ?? "{}";
   try {
     const obj = JSON.parse(raw);
-    if (obj.same === true && typeof obj.title === "string") {
-      return obj.title as string;
+    if ((obj.type === "event" || obj.type === "topic") && typeof obj.title === "string") {
+      return { type: obj.type, title: obj.title };
     }
     return null;
   } catch {
@@ -111,7 +125,8 @@ async function validateCluster(
 
 export async function clusterArticles(
   articles: RawArticle[],
-  existingTitles: string[] = []
+  existingEventTitles: string[] = [],
+  recentTopicTitles: string[] = []
 ): Promise<ArticleCluster[]> {
   if (articles.length === 0) return [];
 
@@ -158,7 +173,6 @@ export async function clusterArticles(
   nameDeduped.sort((a, b) => b.length - a.length);
   const candidates = [...embeddingDeduped, ...nameDeduped];
 
-
   if (candidates.length === 0) return [];
 
   // 4. Validate up to 10 embedding candidates + up to 10 name candidates (cap 20 total)
@@ -167,16 +181,24 @@ export async function clusterArticles(
   const results: ArticleCluster[] = [];
 
   for (const arts of topCandidates) {
-    const eventTitle = await validateCluster(client, arts);
-    if (!eventTitle) continue;
+    const validation = await validateCluster(client, arts);
+    if (!validation) continue;
 
-    // Skip if the event title is too similar to an already-existing story
-    const alreadyExists = existingTitles.some(
-      (t) => titleSimilarity(eventTitle, t) >= 0.4
-    );
-    if (alreadyExists) continue;
+    if (validation.type === "event") {
+      // Events: skip if already covered by any article in the DB
+      const alreadyExists = existingEventTitles.some(
+        (t) => titleSimilarity(validation.title, t) >= 0.4
+      );
+      if (alreadyExists) continue;
+    } else {
+      // Topics: skip only if a recent overview (last 3 days) already covers this topic
+      const recentlyPublished = recentTopicTitles.some(
+        (t) => titleSimilarity(validation.title, t) >= 0.4
+      );
+      if (recentlyPublished) continue;
+    }
 
-    results.push({ eventTitle, articles: arts });
+    results.push({ eventTitle: validation.title, articles: arts, type: validation.type });
   }
 
   return results;

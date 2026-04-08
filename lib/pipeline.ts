@@ -131,8 +131,41 @@ export async function synthesizeCluster(
     )
     .join("\n\n---\n\n");
 
-  // Step 1: Main synthesis (objective report + facts + category)
-  const synthesisPrompt = `Analyseer de volgende nieuwsartikelen over hetzelfde onderwerp en genereer:
+  // Step 1: Main synthesis — different prompt for topic overviews vs single events
+  const isTopic = cluster.type === "topic";
+
+  const synthesisPrompt = isTopic
+    ? `Je ontvangt nieuwsberichten die verschillende sub-verhalen behandelen van hetzelfde prominente lopende onderwerp. Schrijf een objectief overzichtsartikel.
+
+${articlesText}
+
+Genereer een JSON-object met:
+{
+  "title": "Objectieve overzichtstitel (max 12 woorden, geen emotie, geen clickbait, geen woord 'overzicht')",
+  "summary": "2-3 feitelijke zinnen die de kern van het onderwerp en de meest recente stand van zaken beschrijven",
+  "objectiveReport": "Objectief overzichtsartikel in 4-5 alinea's (max 500 woorden). Behandel de belangrijkste sub-ontwikkelingen elk in een eigen alinea. Alleen verifieerbare feiten, namen, datums, cijfers. Geen emotionele bijvoeglijke naamwoorden. Schrijf in het Nederlands.",
+  "category": "één van: politiek, economie, klimaat, technologie, buitenland, maatschappij, sport",
+  "intriguingFacts": [
+    {"fact": "Weinig bekend achtergrond- of contextfeit dat dit onderwerp verdiept", "source": "Bronvermelding"}
+  ],
+  "politicalContext": {
+    "parties": [
+      {
+        "name": "Partijnaam",
+        "abbreviation": "Afkorting",
+        "position": "for|against|neutral|divided",
+        "context": "Kort standpunt (1-2 zinnen)"
+      }
+    ],
+    "nextDebate": "datum of null"
+  }
+}
+
+Regels:
+- intriguingFacts: 3-5 items die de lezer breed context geven
+- politicalContext: alleen als politiek relevant, anders null
+- De bronartikelen kunnen in het Engels of Nederlands zijn — schrijf alle output altijd in het Nederlands`
+    : `Analyseer de volgende nieuwsartikelen over hetzelfde nieuwsfeit en genereer:
 
 ${articlesText}
 

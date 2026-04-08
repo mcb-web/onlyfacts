@@ -98,7 +98,7 @@ async function fetchFeed(sourceKey: string, url: string): Promise<RawArticle[]> 
           item.contentSnippet ?? item.content ?? item.summary ?? ""
         ).slice(0, 600),
         url: item.link ?? item.guid ?? url,
-        publishedAt: item.pubDate ? new Date(item.pubDate) : new Date(),
+        publishedAt: (() => { const d = item.pubDate ? new Date(item.pubDate) : new Date(); return isNaN(d.getTime()) ? new Date() : d; })(),
       }));
   } catch (err) {
     console.warn(`[scraper] Failed to fetch ${sourceKey} (${url}):`, err);
