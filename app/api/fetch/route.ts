@@ -35,10 +35,8 @@ export async function GET() {
       return NextResponse.json({ error: "Too few articles fetched", log }, { status: 500 });
     }
 
-    // 2. Load recent event titles so the cluster step can avoid re-grouping them
-    const recentCutoff = new Date(Date.now() - 24 * 3600 * 1000);
+    // 2. Load all existing event titles so the cluster step can avoid re-creating known stories
     const recentEvents = await prisma.newsEvent.findMany({
-      where: { createdAt: { gte: recentCutoff } },
       select: { title: true },
     });
     const existingTitles = recentEvents.map((e) => e.title);
@@ -52,10 +50,10 @@ export async function GET() {
       return NextResponse.json({ message: "No clusters found", log });
     }
 
-    // 4. Synthesize each cluster and store — cap at 4 per run to avoid timeout
+    // 4. Synthesize each cluster and store — cap at 8 per run to stay within Vercel timeout
     const topClusters = clusters
       .sort((a, b) => b.articles.length - a.articles.length)
-      .slice(0, 2);
+      .slice(0, 8);
     log.push(`Processing ${topClusters.length} of ${clusters.length} clusters`);
 
     const results = { created: 0, skipped: 0, failed: 0 };
