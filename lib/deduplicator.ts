@@ -8,7 +8,7 @@ export interface ArticleCluster {
   articles: RawArticle[];
 }
 
-const SIMILARITY_THRESHOLD = 0.68;
+const SIMILARITY_THRESHOLD = 0.75;
 const SIX_HOURS_MS = 6 * 3600 * 1000;
 
 /** Extract mid-sentence capitalised words (likely proper nouns / names). */
@@ -139,23 +139,30 @@ export async function clusterArticles(
   // 3b. Additional candidates from name-based matching
   const nameCandidates = nameBasedCandidates(articles);
 
-  // Merge, deduplicating by URL set
+  // Merge: embedding candidates first (semantic match = more reliable),
+  // then name-based candidates not already covered, deduplicating by URL set.
   const seenKeys = new Set<string>();
-  const candidates: RawArticle[][] = [];
-  for (const group of [...embeddingCandidates, ...nameCandidates]) {
+  const embeddingDeduped: RawArticle[][] = [];
+  for (const group of embeddingCandidates) {
     const key = group.map((a) => a.url).sort().join("|");
-    if (!seenKeys.has(key)) {
-      seenKeys.add(key);
-      candidates.push(group);
-    }
+    if (!seenKeys.has(key)) { seenKeys.add(key); embeddingDeduped.push(group); }
   }
+  const nameDeduped: RawArticle[][] = [];
+  for (const group of nameCandidates) {
+    const key = group.map((a) => a.url).sort().join("|");
+    if (!seenKeys.has(key)) { seenKeys.add(key); nameDeduped.push(group); }
+  }
+
+  // Sort each group by article count, then interleave: all embedding first, then name-based.
+  embeddingDeduped.sort((a, b) => b.length - a.length);
+  nameDeduped.sort((a, b) => b.length - a.length);
+  const candidates = [...embeddingDeduped, ...nameDeduped];
+
 
   if (candidates.length === 0) return [];
 
-  // 4. Validate top candidates only — sort by source count desc, cap at 10
-  const topCandidates = candidates
-    .sort((a, b) => b.length - a.length)
-    .slice(0, 10);
+  // 4. Validate up to 10 embedding candidates + up to 10 name candidates (cap 20 total)
+  const topCandidates = candidates.slice(0, 20);
 
   const results: ArticleCluster[] = [];
 
